@@ -1,0 +1,13 @@
+name: tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.9" # the oldest version the script supports
+      - run: python tests/test_md_to_csv.py

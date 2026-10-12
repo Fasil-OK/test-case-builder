@@ -1,0 +1,54 @@
+﻿"ID","Title","Feature","Priority","Type","Preconditions","Test data","Steps","Expected result","Source","Status","Actual result","Remarks"
+"TC-HEALTH-001","Health endpoint answers without a token","Health check","P1","Functional","","","1. Send `GET /health` with no `Authorization` header.","1. The response status is `200` and the body is `{""ok"":true}`.","`src/server.js:9`, `test/health.test.js` (""GET /health returns ok"")","","",""
+"TC-AUTH-001","[No unit test] Login with valid credentials returns a token","Login","P1","Functional","• User A exists.","• Body: `{""email"": ""qa.user.a@example.com"", ""password"": ""Qa-Pass-123!""}`","1. Send `POST /auth/login` with header `Content-Type: application/json` and the body above.
+2. Send `GET /notes` with header `Authorization: Bearer <token from step 1>`.","1. The response status is `200` and the body has a single field `token` holding a non-empty string.
+2. The response status is `200`, which shows the token is accepted.","`src/routes/auth.js:8-16`","","",""
+"TC-AUTH-002","[No unit test] Login is rejected with a wrong password","Login","P1","Negative","• User A exists.","• Body: `{""email"": ""qa.user.a@example.com"", ""password"": ""Wrong-Pass-999""}`","1. Send `POST /auth/login` with the body above.","1. The response status is `401` and the body is `{""error"":""invalid credentials""}`. No `token` field is returned.","`src/routes/auth.js:12-14`","","",""
+"TC-AUTH-003","[No unit test] Login for an unregistered email gives the same error as a wrong password","Login","P2","Security","• No user exists with the email `qa.nobody@example.com`.","• Body: `{""email"": ""qa.nobody@example.com"", ""password"": ""Qa-Pass-123!""}`","1. Send `POST /auth/login` with the body above.","1. The response status is `401` and the body is `{""error"":""invalid credentials""}`, identical to TC-AUTH-002, so the response does not reveal whether the email is registered.","`src/routes/auth.js:12-14`","","",""
+"TC-AUTH-004","[No unit test] Login is rejected with empty email and password","Login","P2","Negative","","• Body: `{""email"": """", ""password"": """"}`","1. Send `POST /auth/login` with the body above.","1. The response status is `401` and the body is `{""error"":""invalid credentials""}`.","`src/routes/auth.js:9-14`","","",""
+"TC-NOTES-001","[No unit test] Create a note with a title and a body","Notes","P1","Functional","• You have Token A.","• Body: `{""title"": ""Test Note 1"", ""body"": ""Test body 1""}`","1. Send `POST /notes` with Token A and the body above.
+2. Send `GET /notes` with Token A.","1. The response status is `201`. The body has `id`, `title` = `Test Note 1`, `body` = `Test body 1` and `created_at`.
+2. The list contains a note with the `id` from step 1.","`src/routes/notes.js:14-21`","","",""
+"TC-NOTES-002","[No unit test] Create a note with a title only","Notes","P2","Functional","• You have Token A.","• Body: `{""title"": ""Test Note 2""}`","1. Send `POST /notes` with Token A and the body above.","1. The response status is `201`, `title` is `Test Note 2` and `body` is an empty string `""""`.","`src/routes/notes.js:15-21`, `migrations/002_create_notes.sql:5`","","",""
+"TC-NOTES-003","[No unit test] Creating a note without a title is rejected","Notes","P2","Negative","• You have Token A.","• Body 1: `{""body"": ""Test body 3""}`
+• Body 2: `{""title"": """", ""body"": ""Test body 3""}`","1. Send `POST /notes` with Token A and Body 1.
+2. Send `POST /notes` with Token A and Body 2.
+3. Send `GET /notes` with Token A.","1. The response status is `400` and the body is `{""error"":""title is required""}`.
+2. The response status is `400` and the body is `{""error"":""title is required""}`.
+3. The list contains no note with body `Test body 3`.","`src/routes/notes.js:16`","","",""
+"TC-NOTES-004","[No unit test] Notes are listed newest first","Notes","P1","Functional","• You have Token A.","• First body: `{""title"": ""Order Check Old""}`
+• Second body: `{""title"": ""Order Check New""}`","1. Send `POST /notes` with Token A and the first body.
+2. Wait two seconds, then send `POST /notes` with Token A and the second body.
+3. Send `GET /notes` with Token A.","1. The response status is `201`.
+2. The response status is `201`.
+3. The response status is `200` and the body is a JSON array. `Order Check New` appears before `Order Check Old`, and every item has exactly the fields `id`, `title`, `body` and `created_at`.","`src/routes/notes.js:6-11`, `README.md` (Things that bit us)","","",""
+"TC-NOTES-005","[No unit test] A user does not see another user's notes","Notes","P1","Security","• You have Token A and Token B.","• Body: `{""title"": ""Private Note A""}`","1. Send `POST /notes` with Token A and the body above.
+2. Send `GET /notes` with Token B.","1. The response status is `201`.
+2. The response status is `200` and the list contains no note titled `Private Note A`.","`src/routes/notes.js:8-9`","","",""
+"TC-NOTES-006","[No unit test] Deleting a note removes it from the list","Notes","P1","Functional","• You have Token A.
+• User A has a note titled `Delete Me 1`; note its `id`.","","1. Send `DELETE /notes/<id>` with Token A.
+2. Send `GET /notes` with Token A.","1. The response status is `204` and the body is empty.
+2. The list contains no note with that `id`.","`src/routes/notes.js:25-30`, `src/routes/notes.js:8`","","",""
+"TC-NOTES-007","[No unit test] A deleted note stays in the database with a deletion time","Notes","P1","Integration","• You have Token A and `psql` access to the database.
+• User A has a note titled `Delete Me 2`; note its `id`.","","1. Send `DELETE /notes/<id>` with Token A.
+2. In `psql`, run `SELECT id, title, deleted_at FROM notes WHERE id = <id>;`","1. The response status is `204`.
+2. One row is returned. `title` is `Delete Me 2` and `deleted_at` holds the time of step 1, not NULL.","`README.md` (Things that bit us), `src/routes/notes.js:24-28`","","",""
+"TC-NOTES-008","[No unit test] Deleting the same note a second time returns 404","Notes","P2","Negative","• You have Token A.
+• User A has a note titled `Delete Me 3`; note its `id`.","","1. Send `DELETE /notes/<id>` with Token A.
+2. Send the same request again.","1. The response status is `204`.
+2. The response status is `404` and the body is empty.","`src/routes/notes.js:27-30`","","",""
+"TC-NOTES-009","[No unit test] A user cannot delete another user's note","Notes","P1","Security","• You have Token A and Token B.
+• User A has a note titled `Keep Me A`; note its `id`.","","1. Send `DELETE /notes/<id>` with Token B.
+2. Send `GET /notes` with Token A.","1. The response status is `404` and the body is empty.
+2. The list still contains the note `Keep Me A`.","`src/routes/notes.js:27-30`","","",""
+"TC-NOTES-010","[No unit test] Deleting a note that does not exist returns 404","Notes","P2","Negative","• You have Token A.
+• No note has the id `999999999`.","","1. Send `DELETE /notes/999999999` with Token A.","1. The response status is `404` and the body is empty.","`src/routes/notes.js:27-30`","","",""
+"TC-NOTES-011","[No unit test] Notes endpoints reject a request with no token","Notes","P1","Security","","• Body: `{""title"": ""No Token Note""}`","1. Send `GET /notes` with no `Authorization` header.
+2. Send `POST /notes` with no `Authorization` header and the body above.
+3. Send `DELETE /notes/1` with no `Authorization` header.","1. The response status is `401` and the body is `{""error"":""unauthorized""}`.
+2. The response status is `401` and the body is `{""error"":""unauthorized""}`.
+3. The response status is `401` and the body is `{""error"":""unauthorized""}`.","`src/server.js:11`, `src/middleware/requireAuth.js:3-10`","","",""
+"TC-NOTES-012","[No unit test] Notes endpoints reject an invalid token","Notes","P1","Security","","• Header: `Authorization: Bearer not.a.valid.token`","1. Send `GET /notes` with the header above.","1. The response status is `401` and the body is `{""error"":""unauthorized""}`.","`src/middleware/requireAuth.js:4-9`","","",""
+"TC-NOTES-013","[No unit test] A request body over 100 kB is refused","Notes","P3","Boundary","• You have Token A.","• A JSON body `{""title"": ""Big Note"", ""body"": ""<110,000 letters a>""}`","1. Send `POST /notes` with Token A and the body above.
+2. Send `GET /notes` with Token A.","1. The response status is `413`.
+2. The list contains no note titled `Big Note`.","`src/server.js:7`","","",""

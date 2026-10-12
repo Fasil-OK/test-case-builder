@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="test-case-builder logo">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#10B981"/>
+      <stop offset="1" stop-color="#0E7490"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="56" fill="url(#bg)"/>
+  <!-- a clipboard... -->
+  <rect x="66" y="86" width="124" height="140" rx="16" fill="#FFFFFF"/>
+  <!-- ...in a hard hat, because it is a builder -->
+  <path d="M74 94a54 50 0 0 1 108 0z" fill="#FACC15"/>
+  <rect x="118" y="40" width="20" height="54" rx="10" fill="#FDE047"/>
+  <rect x="58" y="88" width="140" height="16" rx="8" fill="#EAB308"/>
+  <!-- a sceptical face: one eyebrow up -->
+  <g fill="none" stroke="#0F172A" stroke-linecap="round">
+    <path d="M96 116h20" stroke-width="4.5"/>
+    <path d="M140 114q10-8 20-3" stroke-width="4.5"/>
+    <path d="M112 151q14 10 30-3" stroke-width="5"/>
+  </g>
+  <circle cx="106" cy="132" r="10" fill="#0F172A"/>
+  <circle cx="150" cy="132" r="10" fill="#0F172A"/>
+  <circle cx="110" cy="128" r="3.5" fill="#FFFFFF"/>
+  <circle cx="154" cy="128" r="3.5" fill="#FFFFFF"/>
+  <!-- the checklist: pass, pass, found one -->
+  <rect x="86" y="168" width="14" height="14" rx="4" fill="#22C55E"/>
+  <rect x="86" y="186" width="14" height="14" rx="4" fill="#22C55E"/>
+  <rect x="86" y="204" width="14" height="14" rx="4" fill="#EF4444"/>
+  <g fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M89.5 175l3 3 5-6"/>
+    <path d="M89.5 193l3 3 5-6"/>
+    <path d="M90 208l6 6m0-6l-6 6"/>
+  </g>
+  <rect x="108" y="171" width="62" height="8" rx="4" fill="#CBD5E1"/>
+  <rect x="108" y="189" width="46" height="8" rx="4" fill="#CBD5E1"/>
+  <rect x="108" y="207" width="56" height="8" rx="4" fill="#CBD5E1"/>
+</svg>
