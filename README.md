@@ -19,6 +19,7 @@
   <a href="#install">Install</a> ·
   <a href="#usage">Usage</a> ·
   <a href="#what-you-get">What you get</a> ·
+  <a href="#how-it-differs">How it differs</a> ·
   <a href="#how-it-works">How it works</a> ·
   <a href="#tags">Tags</a> ·
   <a href="#example">Example</a> ·
@@ -138,6 +139,32 @@ And every case looks like this:
 The document ends with two sections that are often the most useful part: **Not covered**
 (what was left out, and why) and **Needs confirmation** (where the docs and the code
 disagree, or the repo does not say what should happen).
+
+## How it differs
+
+There are good test-case skills already. Most start from one of two inputs: a requirements
+document or feature description you hand them
+([qa-test-planner](https://github.com/softaworks/agent-toolkit/tree/main/skills/qa-test-planner),
+[test-cases](https://github.com/stellarlinkco/myclaude/tree/master/skills/test-cases)), or
+the diff of a feature that was just built
+([qakit](https://github.com/mimukit/skills/tree/main/skills/qakit)). `test-case-builder`
+starts from the whole repository, and that changes what it can tell you:
+
+- **It cross-checks the PRD against the code.** A spec-driven skill writes what the spec says. This one reads both, so a requirement that is not built is tagged `[Not developed]`, and a place where the two disagree is reported instead of one being silently picked.
+- **It uses the unit tests as evidence.** Tests hold the exact boundaries and error messages a spec leaves out. They are read for that, and behaviour they do not cover is tagged `[No unit test]`, so QC knows where it is the only safety net.
+- **Every expected result has a source.** Each case names the file and line, or the PRD section, it was taken from. A reviewer can check a case in a minute.
+- **The spreadsheet is generated, not written.** A script builds the CSV and the summary table from the Markdown and refuses a malformed document, so the two files and the counts cannot drift apart.
+- **It is built to be run again.** Case IDs never change, tester results carry over to the new CSV, and tags drop off as features and tests land.
+- **It is small.** One `SKILL.md` of about 180 lines, one template, and one script with no dependencies.
+
+Another skill fits better when:
+
+- you want the agent to **execute** the cases through a browser or app harness: [manual-testing](https://www.skills.sh/bmad-labs/skills/manual-testing)
+- you want test plans, regression suites, bug-report templates or Figma checks: [qa-test-planner](https://github.com/softaworks/agent-toolkit/tree/main/skills/qa-test-planner)
+- you only need a quick human checklist for the change you just made: [qakit](https://github.com/mimukit/skills/tree/main/skills/qakit)
+
+This comparison reflects those projects as of October 2026. If it has gone out of date,
+open an issue.
 
 ## How it works
 
