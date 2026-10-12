@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo.svg" width="112" alt="test-case-builder logo">
+  <img src="assets/logo.png" width="200" alt="test-case-builder mascot: a tester with a magnifying glass holding a bag of caught bugs">
 </p>
 
 <h1 align="center">test-case-builder</h1>
